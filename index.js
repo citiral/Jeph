@@ -37,20 +37,16 @@ function setMessageStarcount(starboard, message, reaction) {
     reactionmessage = db.get('reactions').find(reaction => reaction.id == message.id).value();
 
     // Calculate the count of the message 
-    console.log(`setting count it ${reaction.count}`);
     let count = new Number(reaction.count);
-    console.log(reaction.users);
-    console.log(message.author);
     if (reaction.users.has(message.author.id)) {
         count -= 1;
         console.log("user had reacted to his own message");
     }
-
-    console.log(`setting count it ${count}`);
     
     // If the message has no more stars, remove the old message reaction
     if (count == 0) {
         if (reactionmessage != undefined) {
+            console.log(`Removing reaction message.`);
             removeMessageMapping(message);
             starboard.fetchMessage(reactionmessage.reaction).then(message => {
                 return message.delete();
@@ -62,12 +58,14 @@ function setMessageStarcount(starboard, message, reaction) {
     
     // If it is the first star, create a message and store it in the db
     if (reactionmessage == undefined) {
+        console.log(`Created new reaction message.`);
         starboard.send('', createMessageRichEmbed(reaction.message, count))
             .then(starmessage => addMessageMapping(message, starmessage))
             .catch(console.error);
     }
     // Otherwise, get the original reaction message and edit it
     else {
+        console.log(`Editing reaction message.`);
         starboard.fetchMessage(reactionmessage.reaction).then(message => {
             return message.edit(createMessageRichEmbed(reaction.message, count));
         }).catch( error => {
@@ -80,6 +78,7 @@ function setMessageStarcount(starboard, message, reaction) {
 client.on('messageReactionAdd', (reaction, user) => {
     // We are only interested in stars
     if (reaction._emoji.name == "⭐") {
+        console.log(`Message got starred! :)`);
 
         // User can't star himself
         if (user.id == reaction.message.author.id) {
@@ -102,6 +101,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 client.on('messageReactionRemove', reaction => {
     // We are only interested in stars
     if (reaction.emoji.name == "⭐") {
+        console.log(`Message got unstarred! :(`);
 
         // Find the starboard of this guild
         const starboard = reaction.message.guild.channels.find(ch => ch.name === "starboard");

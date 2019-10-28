@@ -2,7 +2,7 @@
   "name": "starbot",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "build/index.js",
   "dependencies": {
     "discord.js": "^11.5.1",
     "dotenv": "^8.2.0",
@@ -10,7 +10,8 @@
   },
   "devDependencies": {},
   "scripts": {
-    "test": "node index.js"
+    "tsc": "tsc",
+    "test": "node build/index.js"
   },
   "author": "",
   "license": "ISC"

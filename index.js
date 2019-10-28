@@ -43,8 +43,8 @@ function setMessageStarcount(starboard, message, reaction) {
         console.log("user had reacted to his own message");
     }
     
-    // If the message has no more stars, remove the old message reaction
-    if (count == 0) {
+    // If the message has not enough stars, remove the old message reaction
+    if (count < 3) {
         if (reactionmessage != undefined) {
             console.log(`Removing reaction message.`);
             removeMessageMapping(message);
@@ -63,6 +63,7 @@ function setMessageStarcount(starboard, message, reaction) {
             .then(starmessage => addMessageMapping(message, starmessage))
             .catch(console.error);
     }
+
     // Otherwise, get the original reaction message and edit it
     else {
         console.log(`Editing reaction message.`);
